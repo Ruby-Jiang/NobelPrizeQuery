@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>nobel prize laureates</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div><img src="/image/New-will-fullsize.jpg" alt="Alfred Nobel"></div>    
+
+    <h1>NOBEL PRIZE LAUREATES</h1>
+
+    <div class = "selectyear">
+        <label>Start Year</label>
+        <input id="year1" placeholder="From 1970" type="text" required> 
+        <label>End Year</label>
+        <input id="year2" placeholder="To 2018" type="text" required>
+    </div>
+
+    <div class = "selectcate">   
+        <div id='tagcate'><label>Category</label></div>
+        <div id="category">...</div>
+    </div>
+
+    <div class = "submit">
+        <button type="button" onclick="undisplayJSON()">Reset</button>
+        <button type="button" onclick="displayJSON()">Submit</button>
+    </div>
+
+    <div id="demo1"></div>
+    <div id="demo"></div>
+
+
+    <script>
+
+    // call this function first to display the category readed from prizesByYear.json.
+    displaycategory();
+
+    function FirstRequest(func){
+        // This function make the xmlhttp request loading prizesByYear.json. functions jsoncategory(), formJSON(), noJSON() are passed as arguments.
+
+        var xmlhttp = new XMLHttpRequest();
+        var url = "prizesByYear.json";
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var parsedObj = JSON.parse(xmlhttp.responseText);  
+                func(parsedObj);
+            }
+        };
+
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function SecondRequest(func,arg){
+        // This function make the xmlhttp request loading winnersByID. functions filterTable(), InsertInfo() are passed as arguments. Also a extra argument is allowed to pass in the function, basically this important arg refers to winnerids, they remain the same between two json files.
+        var xmlhttp = new XMLHttpRequest();
+        var url = "winnersByID.json";
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var parsedObj = JSON.parse(xmlhttp.responseText);  
+                if (arg == null){
+                    func(parsedObj);
+                }
+                else{
+                    func(parsedObj, arg);
+                }
+            }
+        };
+
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function displaycategory(){
+        // This function display category by making xmlhttp request.
+        FirstRequest(jsoncategory);
+    }
+
+    function displayJSON(){
+        // This main function display the result when the submit button is clicked.
+        FirstRequest(formJSON);
+    }
+
+    function checkGender(){
+        // This function is called every time the gender radio buttons are active, it then pass filterTable() function as argument.
+        SecondRequest(filterTable);
+    }    
+
+    function undisplayJSON(){
+        // This function is called when the reset button is clicked, it then pass noJSON() function as argument.
+        FirstRequest(noJSON);
+    }
+
+    function displayInfo(id){
+        // This function is called when the moreInfo button is clicked, then it pass InsertInfo and winnerid to the request.
+        SecondRequest(InsertInfo,id);
+    }
+
+    function jsoncategory(obj){
+        //This function extracts category information from jsonfile.
+        var prizes = obj.prizes;
+        var categoryInfo = "<select id='categoryselect'>";
+        categoryInfo += "<option value='all'>all</option>"
+        for (var i=5; i<11; i++){
+            var category = prizes[i].category;
+            categoryInfo += "<option value ='"+ category +"'>" + category + "</option>";
+        }
+        categoryInfo += "</select>";
+        document.getElementById("category").innerHTML = categoryInfo;
+    }
+
+    function formJSON(obj){
+        // This function checks the input information and display the corresponding results and the gender choices after the submission.
+        var prizes = obj.prizes;
+        var year1 = document.getElementById("year1").value;
+        var year2 = document.getElementById("year2").value;   
+        var nobelCat = [];
+        nobelCat.push(document.getElementById("categoryselect").value);
+        var gender = document.getElementsByName("gender").value;
+        var prizeInfo = "<table id='BigTable'>"; 
+        prizeInfo +=  "<tr class='header'><th>Year</th><th>Category</th><th>Laureate</th><th>Motivation</th><th>More Information</th></tr>"
+        if (isNaN(year1) || isNaN(year2)){
+            var genderInfo = "<h4>Please input invaild years!</h4>";
+            var prizeInfo = "";
+        }
+        else if(year1 < 1970 || year2 > 2018){
+            var genderInfo = "<h4>Please input years in the range of 1970~2018</h4>";
+            var prizeInfo = "";
+        }
+        else if (year1 > year2){
+            var genderInfo = "<h4>Please input in the right order!</h4>";
+            var prizeInfo = "";
+        }
+        else{
+            var genderInfo = "<label>Gender Filter: </label><label>Male</label><input class='Gender' type='radio' name='gender' onclick='checkGender()' id='male' value='male'><label>Female</label><input class='Gender' type='radio' name='gender' onclick='checkGender()' id='Female' value='female'><label>Both</label><input class='Gender' type='radio' name='gender' onclick='checkGender()' id='Both' value='both'>"
+        }
+        if (nobelCat[0]=='all'){
+            for (var i=5; i<11; i++){
+            nobelCat.push(prizes[i].category);
+            }
+        }
+        for (var i=0; i < prizes.length; i++) 
+        {   
+            var year = prizes[i].year;
+            var cate = prizes[i].category;
+            var laureates = prizes[i].laureates;
+            if (!isNaN(year1) && !isNaN(year2) && year1 >= 1970 && year2 <= 2018  && year >= year1 && year <= year2 && nobelCat.includes(cate)){
+                for (var j=0; j < laureates.length; j++){
+                    if (laureates[j].motivation == null){
+                        motivation = "No record";
+                    }
+                    else{
+                        motivation = laureates[j].motivation;
+                    }
+                    prizeInfo += "<tr id=" + laureates[j].id + "><td width='30px'>" + year + "</td><td width='50px'>" + cate + "</td><td width='50px'>" + laureates[j].firstname + ' ' + laureates[j].surname +"</td><td width='700px'>" + motivation +"</td><td width='100px'><button class='insertbutton' id='btn"+laureates[j].id + "' type='button' onclick='displayInfo(" +laureates[j].id+ ")'>moreInfo</button></td><tr>";
+            }
+         }
+        }
+        prizeInfo += "</table>"; 
+        document.getElementById("demo").innerHTML = prizeInfo;
+        document.getElementById("demo1").innerHTML = genderInfo;
+    }
+
+    function noJSON(obj){
+        // Display prizeInfo and genderInfo as null.
+        var prizes = obj.prizes;
+        prizeInfo = null; 
+        genderInfo = null;
+        document.getElementById("demo").innerHTML = prizeInfo;
+        document.getElementById("demo1").innerHTML = genderInfo;
+    }
+
+    function InsertInfo(obj, innerid){
+        // This function insert winners' details by getting the corresponding winner by id. (the ids are added in the <tr> tag for this purpose and by clicking the moreInfo button the function displayInfo() takes laureates id)
+        var laureates = obj.laureates;
+        var table = document.getElementsByTagName("table")[0];
+        var rowIndex = document.getElementById(innerid).rowIndex;
+        var row = table.insertRow(rowIndex+1);
+        // Add className for each inserted row for filterTable.
+        for (var t = 0; t < laureates.length; t++){
+            if (laureates[t].id == innerid && laureates[t].gender == 'female'){
+                row.className = 'female';
+            }
+            else if(laureates[t].id == innerid && laureates[t].gender == 'male'){
+                row.className = 'male';
+            }
+        }
+        // Insert cell and spancolumn by 5.
+        var cell = row.insertCell(0);
+        cell.colSpan = 5;
+        // If clicked, disable moreInfo.
+        btn = "btn";
+        btnid = btn.concat(innerid)
+        btn = document.getElementById(btnid);
+        btn.disabled = true;
+        for (var t = 0; t < laureates.length; t++){
+            if (laureates[t].id == innerid){
+                if (laureates[t].died == "0000-00-00"){
+                    death = "No record";
+                }
+                else{
+                    death = laureates[t].died.slice(0, 4);
+                }
+                if (laureates[t].born == "0000-00-00"){
+                    born = "No record";
+                }
+                else{
+                    born = laureates[t].born.slice(0, 4);
+                }
+                if (laureates[t].bornCity == null){
+                    bornCity = "No record";
+                }
+                else{
+                    bornCity = laureates[t].bornCity;
+                }
+                if (laureates[t].bornCountry == null){
+                    bornCountry = "No record";
+                }
+                else{
+                    bornCountry = laureates[t].bornCountry;
+                }
+                if (laureates[t].prizes[0].motivation == null){
+                    motivation = "No record";
+                }
+                else{
+                    motivation = laureates[t].prizes[0].motivation;
+                }
+                if (laureates[t].prizes[0].affiliations[0].name == null){
+                    affiliations = "No record";
+                }
+                else{
+                    affiliations = laureates[t].prizes[0].affiliations[0].name;
+                }
+                cell.innerHTML = "<table bgcolor='#fff2c6'><tr><th width='80px'>Born</th><th width='80px'>Died</th><th width='100px'>BirthpCity</th><th width='100px'>BirthpCountry</th><th width='100px'>Awards</th><th width='200px'>Affiliation</th><th width='500px'>Motivation</th><th width='100px' rowspan='2'><button class='delbutton' type='button' onclick='DelInfo("+ laureates[t].id+ ")'id='ret" + laureates[t].id + "'>return</button></th></tr><tr><td>" + born + "</td><td>" + death + "</td><td>" + bornCity +"</td><td>"+ bornCountry + "</td><td>" + laureates[t].prizes[0].category + "</td><td>" + affiliations + "</td><td>" + motivation + "</td></tr>"
+            }
+        }
+
+    }
+
+    function DelInfo(innerid){
+        // Delete the inserted row when the return button is clicked.
+        var table = document.getElementsByTagName("table")[0];
+        var rowIndex = document.getElementById(innerid).rowIndex;
+        table.deleteRow(rowIndex+1);
+        // Able the moreInfo button.
+        btn = "btn";
+        btnid = btn.concat(innerid);
+        btn = document.getElementById(btnid);
+        btn.disabled = false;
+    }
+
+
+    function filterTable(obj) {
+        // This function filters the gender information and detail information.
+          var laureates = obj.laureates;
+          var table = document.getElementsByTagName("table")[0];
+          var Gender = document.querySelector("input[name='gender']:checked").value;
+          var idlist = [];
+          table.rows[0].style.display = "";
+          for (var i = 1; i < table.rows.length; i++){
+              table.rows[i].style.display = "";
+          }
+
+          if (Gender == "female"){
+          for (var i = 1; i < table.rows.length; i++){
+              if (table.rows[i].className != "female"){
+                  table.rows[i].style.display = "none";
+              }
+          } 
+                for (var m=0; m < laureates.length; m++){
+                    if (laureates[m].gender == "female"){
+                       idlist.push(laureates[m].id); 
+                       }
+                    }
+          for (var i = 1; i < table.rows.length; i++) {
+                for (var n=1; n < idlist.length; n++){
+                    if(table.rows[i].id == idlist[n]){
+                        table.rows[i].style.display = "";
+                    }      
+                }
+                  }
+          }
+          else if (Gender == "male"){
+          for (var i = 1; i < table.rows.length; i++){
+              if (table.rows[i].className != "male"){
+                  table.rows[i].style.display = "none";
+              }
+          }
+                for (var m=0; m < laureates.length; m++){
+                    if (laureates[m].gender == "male"){
+                       idlist.push(laureates[m].id); 
+                       }
+                    }
+          for (i = 1; i < table.rows.length; i++) {
+                for (var n=0; n < idlist.length; n++){
+                    if(table.rows[i].id == idlist[n]){
+                        table.rows[i].style.display = "";
+                    }      
+                }
+                  }
+
+          }
+
+          else {
+                for (i = 1; i < table.rows.length; i++) {
+                        table.rows[i].style.display = "";
+                    }      
+                }
+
+          }
+
+
+        </script>
+    </body>
+</html>

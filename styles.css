@@ -1,0 +1,156 @@
+img{
+  width:100%;
+}
+
+h1{
+  font-family:"Trebuchet MS";
+  font-size:40px;
+  letter-spacing: 2.5px;
+  background: -webkit-linear-gradient(right, #b48c45, #f6df97);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.selectyear{
+  text-align: center;
+}
+
+.selectcate{
+  margin-top: 20px;
+  text-align: center;
+}
+
+.selectcate label{
+  font-family:"Trebuchet MS";
+  padding: 10px;
+  color:#b48c45;
+}
+
+.selectyear label{
+  font-family:"Trebuchet MS";
+  padding: 10px;
+  color:#b48c45;
+}
+
+#demo1{
+  margin-top: 35px;
+}
+
+#demo1 label{
+  font-family:"Trebuchet MS";
+  padding: 10px;
+  color:#b48c45;
+}
+
+h4{
+  text-align: center;
+  font-family:"Trebuchet MS";
+  padding: 10px;
+  color:#b48c45;
+}
+
+.submit{
+  margin-top: 30px;
+  text-align:center; 
+}
+
+.submit button{
+  color: #b48c45;
+  background-color: #fff2c6;
+  padding:8px 15px;
+  font-family:"Trebuchet MS";
+  font-size:15px;
+  transition-duration: 0.4s;
+}
+
+.submit button:hover {
+  background-color: #b48c45;
+  color: white;
+}
+
+#tagcate,#category {
+    display:inline; 
+    padding:5px;
+} 
+
+#BigTable {
+  margin-top: 15px;
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 13px;
+}
+
+#BigTable th, #BigTable td {
+  font-family:"Trebuchet MS";
+  color: #6a585f;
+  text-align: center; 
+  padding: 12px;
+}
+
+#BigTable tr {
+  border-bottom: 1px solid #ddd;
+}
+
+#BigTable tr.header{
+   background-color: #f7f2e5;
+} 
+
+#BigTable tr.header:hover {
+  background-color:#f7f2e5;
+}
+
+#BigTable tr:hover {
+  background-color: #fff2c6;
+}
+
+.insertbutton{
+  font-family:"Trebuchet MS";
+  color: #6a585f;
+  background-color: #f7f2e5;
+  padding:5px 10px;
+  transition-duration: 0.4s;
+}
+
+.insertbutton:hover{
+  color: #f7f2e5;
+  background-color: #6a585f;
+}
+
+ .delbutton{
+  font-family:"Trebuchet MS";
+  color: #6a585f;
+  background-color: #f7f2e5;
+  padding:5px 10px;
+  transition-duration: 0.4s;
+}
+
+ .delbutton:hover{
+  color: #f7f2e5;
+  background-color: #6a585f;
+}
+
+.moreInfo td {
+  text-align: left;
+}
+
+#year1:invalid {
+  height:20px;
+  border: 2px solid #fececd;
+}
+
+#year2:invalid {
+  height:20px;
+  border: 2px solid #fececd;
+}
+
+#year1:valid {
+  height:20px;
+  border: 1px solid #b48c45;
+}
+
+#year2:valid {
+  height:20px;
+  border: 1px solid #b48c45;
+}
