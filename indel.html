@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <title>nobel prize laureates</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <div><img src="/image/New-will-fullsize.jpg" alt="Alfred Nobel"></div>    
+    <div><img src="./image/New-will-fullsize.jpg" alt="Alfred Nobel"></div>    
 
     <h1>NOBEL PRIZE LAUREATES</h1>
 
@@ -40,7 +40,7 @@
         // This function make the xmlhttp request loading prizesByYear.json. functions jsoncategory(), formJSON(), noJSON() are passed as arguments.
 
         var xmlhttp = new XMLHttpRequest();
-        var url = "prizesByYear.json";
+        var url = "./prizesByYear.json";
 
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -56,7 +56,7 @@
     function SecondRequest(func,arg){
         // This function make the xmlhttp request loading winnersByID. functions filterTable(), InsertInfo() are passed as arguments. Also a extra argument is allowed to pass in the function, basically this important arg refers to winnerids, they remain the same between two json files.
         var xmlhttp = new XMLHttpRequest();
-        var url = "winnersByID.json";
+        var url = "./winnersByID.json";
 
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
